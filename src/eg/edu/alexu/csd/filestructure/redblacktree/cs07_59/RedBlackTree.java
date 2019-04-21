@@ -6,6 +6,8 @@ import eg.edu.alexu.csd.filestructure.redblacktree.IRedBlackTree;
 public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<T,V>{
 	
 	private INode <T, V> root = null;
+	private INode <T, V> nil = null;
+
 	@Override
 	public INode<T, V> getRoot() {
 		// TODO Auto-generated method stub
@@ -67,105 +69,47 @@ public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<
 		clearTree(node.getRightChild());
 	}
 	
-	private void rotateRight(INode<T, V> node) {
+	public void rotateRight(INode<T, V> node) {
+		
 		INode<T, V> y = node.getLeftChild();
-	}
-	
-	
-	
-	@SuppressWarnings({ "unused", "hiding" })
-	private class Node <T extends Comparable<T>, V> implements INode<T, V>{
-		
-		static final boolean RED   = true;
-	    static final boolean BLACK = false;
-	    private boolean color = true;
-	    private INode <T , V> parent = null;
-	    private INode <T , V> leftChild = null;
-	    private INode <T , V> rightChild = null;
-	    private T key = null;
-	    private V value = null;
-		@Override
-		public void setParent(INode<T, V> parent) {
-			// TODO Auto-generated method stub
-			this.parent = parent;
+		node.setLeftChild(y.getRightChild());
+		if (y.getRightChild() != nil) {
+			y.getRightChild().setParent(node);	
 		}
-
-		@Override
-		public INode<T, V> getParent() {
-			// TODO Auto-generated method stub
-			return parent;
-			
-		}
-
-		@Override
-		public void setLeftChild(INode<T, V> leftChild) {
-			// TODO Auto-generated method stub
-			this.leftChild = leftChild;
-		}
-
-		@Override
-		public INode<T, V> getLeftChild() {
-			// TODO Auto-generated method stub
-			return leftChild;
-		}
-
-		@Override
-		public void setRightChild(INode<T, V> rightChild) {
-			// TODO Auto-generated method stub
-			this.rightChild = rightChild;
-		}
-
-		@Override
-		public INode<T, V> getRightChild() {
-			// TODO Auto-generated method stub
-			return rightChild;
-		}
-
-		@Override
-		public T getKey() {
-			// TODO Auto-generated method stub
-			return key;
-		}
-
-		@Override
-		public void setKey(T key) {
-			// TODO Auto-generated method stub
-			this.key = key;
-		}
-
-		@Override
-		public V getValue() {
-			// TODO Auto-generated method stub
-			return value;
-		}
-
-		@Override
-		public void setValue(V value) {
-			// TODO Auto-generated method stub
-			this.value = value;
-		}
-
-		@Override
-		public boolean getColor() {
-			// TODO Auto-generated method stub
-			return color;
-		}
-
-		@Override
-		public void setColor(boolean color) {
-			// TODO Auto-generated method stub
-			this.color = color;
-		}
-
-		@Override
-		public boolean isNull() {
-			// TODO Auto-generated method stub
-			if (key == null) {
-				return true;
-			}
-			return false;
+		y.setParent(node.getParent());
+		if (node.getParent() == nil) {
+			root = y;
+		} else if (node == node.getParent().getLeftChild()) {
+			node.getParent().setLeftChild(y);
+		} else {
+			node.getParent().setRightChild(y);
 		}
 		
+		y.setRightChild(node);
+		node.setParent(y);
+	
 	}
+	
+   public void rotateLeft(INode<T, V> node) {
+		
+		INode<T, V> y = node.getRightChild();
+		node.setRightChild(y.getLeftChild());
+		if (y.getLeftChild() != nil) {
+			y.getLeftChild().setParent(node);	
+		}
+		y.setParent(node.getParent());
+		if (node.getParent() == nil) {
+			root = y;
+		} else if (node == node.getParent().getLeftChild()) {
+			node.getParent().setLeftChild(y);
+		} else {
+			node.getParent().setRightChild(y);
+		}
+		
+		y.setLeftChild(node);
+		node.setParent(y);
+	
+	}
+	
 
 }
