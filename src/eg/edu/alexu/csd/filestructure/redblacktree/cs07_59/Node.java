@@ -3,7 +3,7 @@ package eg.edu.alexu.csd.filestructure.redblacktree.cs07_59;
 import eg.edu.alexu.csd.filestructure.redblacktree.INode;
 
 public class Node <T extends Comparable<T>, V> implements INode<T, V>{
-    private boolean color = true;
+    private boolean color = false;
     private INode <T , V> parent = null;
     private INode <T , V> leftChild = null;
     private INode <T , V> rightChild = null;
