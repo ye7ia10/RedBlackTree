@@ -7,9 +7,11 @@ import eg.edu.alexu.csd.filestructure.redblacktree.IRedBlackTree;
 
 public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<T,V>{
 	
-	
 	private INode <T, V> nil = null;
 	private INode <T, V> root = nil;
+	private boolean red = true;
+	private boolean black = false;
+	
 	@Override
 	public INode<T, V> getRoot() {
 		// TODO Auto-generated method stub
@@ -200,7 +202,20 @@ public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<
 	@Override
 	public boolean delete(T key) {
 		// TODO Auto-generated method stub
-		return false;
+		INode<T,V> node = searchNode(root, key);
+		if(node == null)
+			return false;
+		INode<T,V> deletedNode = getMin(node.getRightChild());
+		if(node.getRightChild() != nil) {
+			node.setKey(deletedNode.getKey());
+			node.setValue(deletedNode.getValue());
+			node = deletedNode;
+		}
+		node = deleteEndNode(node);
+		if(!node.getColor())
+			fixDelete(node);
+		
+		return true;
 	}
 	
 	private void clearTree(INode<T,V> node) {
@@ -213,7 +228,7 @@ public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<
 		clearTree(node.getRightChild());
 	}
 	
-	public void rotateRight(INode<T, V> node) {
+	private void rotateRight(INode<T, V> node) {
 		
 		INode<T, V> y = node.getLeftChild();
 		node.setLeftChild(y.getRightChild());
@@ -234,7 +249,7 @@ public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<
 	
 	}
 	
-   public void rotateLeft(INode<T, V> node) {
+   private void rotateLeft(INode<T, V> node) {
 		
 		INode<T, V> y = node.getRightChild();
 		node.setRightChild(y.getLeftChild());
@@ -253,6 +268,114 @@ public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<
 		y.setLeftChild(node);
 		node.setParent(y);
 	
+	}
+   
+   private void fixDelete(INode<T,V> node) {
+		if(node.getParent().getLeftChild() == node)
+			fixLeft(node);
+		else
+			fixRight(node);
+	}
+   
+	private void fixLeft(INode<T,V>node) {
+		INode<T,V> w = node.getParent().getRightChild();
+		while(node.getColor() == black && node != root) {
+			if(w.getColor() == red) {
+				w.setColor(black);
+				node.getParent().setColor(red);
+				rotateLeft(node.getParent());
+				w = node.getParent().getRightChild();
+			}
+			if(w.getLeftChild().getColor() == black && w.getRightChild().getColor() == black) {
+				w.setColor(red);
+				node = node.getParent();
+			}else {
+				if(w.getRightChild().getColor() == black) {
+					w.getLeftChild().setColor(black);
+					w.setColor(red);
+					rotateRight(w);
+					w = node.getParent().getRightChild();
+				}else {
+					w.setColor(w.getParent().getColor());
+					w.getParent().setColor(black);
+					w.getRightChild().setColor(black);
+					rotateLeft(node.getParent());
+					node = root;
+				}
+			}
+			
+		}
+		node.setColor(black);
+	}
+	
+	
+	private void fixRight(INode<T,V>node) {
+		INode<T,V> w = node.getParent().getLeftChild();
+		while(node.getColor() == black && node != root) {
+			if(w.getColor() == red) {
+				w.setColor(black);
+				node.getParent().setColor(red);
+				rotateRight(node.getParent());
+				w = node.getParent().getLeftChild();
+			}
+			if(w.getLeftChild().getColor() == black && w.getRightChild().getColor() == black) {
+				w.setColor(red);
+				node = node.getParent();
+			}else {
+				if(w.getLeftChild().getColor() == black) {
+					w.getRightChild().setColor(black);
+					w.setColor(red);
+					rotateLeft(w);
+					w = node.getParent().getRightChild();
+				}else {
+					w.setColor(w.getParent().getColor());
+					w.getParent().setColor(black);
+					w.getLeftChild().setColor(black);
+					rotateRight(node.getParent());
+					node = root;
+				}
+			}
+			
+		}
+		node.setColor(black);
+	}
+	
+	private INode<T,V> getMin(INode<T,V> node){
+		while(node.getLeftChild() != nil)
+			node = node.getLeftChild();
+		return node;
+	}
+	
+	private INode<T,V> deleteEndNode(INode<T,V>node) {
+		INode<T,V> p = node.getParent();
+		INode<T,V> term = nil;
+		if(node.getLeftChild() != nil)
+			term = node.getLeftChild();
+		else
+			term = node.getRightChild();
+		
+		if(p.getLeftChild() == node)
+			p.setLeftChild(term);
+		else
+			p.setRightChild(term);
+		
+		term.setParent(p);
+		return term;
+	}
+	
+	private INode<T,V> searchNode(INode<T,V> node, T key) {
+		while (node != null) {
+			if (node.getKey().compareTo(key) == 0) {
+				return node;
+			}
+		    if (key.compareTo(node.getKey()) > 0) {
+				node = node.getRightChild();
+			} else {
+				node = node.getLeftChild();
+			}
+		}
+		return null;
+		
 	}
 	
 
