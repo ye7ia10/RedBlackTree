@@ -13,11 +13,14 @@ public class tester {
 		tree.insert("soso", "toto");
 		//System.out.println(tree.getRoot().getValue());
 		//System.out.println(tree.getRoot().getColor());
-		tree.clear();
+		//tree.clear();
 		tree.insert("soso", "toto");
 		tree.insert("toto", "toto");
 	    tree.insert("fofo", "toto");
 	    tree.insert("koko", "toto");
+	    tree.search("koko");
+	    tree.delete("fofo");
+	    //tree.delete("toto");
 		System.out.println(tree.getRoot().getColor());
 	}
 }

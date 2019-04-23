@@ -7,7 +7,7 @@ import eg.edu.alexu.csd.filestructure.redblacktree.IRedBlackTree;
 
 public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<T,V>{
 	
-	private INode <T, V> nil = null;
+	private INode <T, V> nil = new Node<T, V>();
 	private INode <T, V> root = nil;
 	private boolean red = true;
 	private boolean black = false;
@@ -21,7 +21,7 @@ public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<
 	@Override
 	public boolean isEmpty() {
 		// TODO Auto-generated method stub
-		return (root == null);
+		return (root == nil);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<
 			throw new RuntimeErrorException(null);
 		}
 		INode<T, V> node = root;
-		while (node != null) {
+		while (node != nil) {
 			if (node.getKey().compareTo(key) == 0) {
 				return node.getValue();
 			}
@@ -202,8 +202,11 @@ public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<
 	@Override
 	public boolean delete(T key) {
 		// TODO Auto-generated method stub
+		if (key == null) {
+			throw new RuntimeErrorException(null);
+		}
 		INode<T,V> node = searchNode(root, key);
-		if(node == null)
+		if(node == nil)
 			return false;
 		INode<T,V> deletedNode = getMin(node.getRightChild());
 		if(node.getRightChild() != nil) {
@@ -364,7 +367,7 @@ public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<
 	}
 	
 	private INode<T,V> searchNode(INode<T,V> node, T key) {
-		while (node != null) {
+		while (node != nil) {
 			if (node.getKey().compareTo(key) == 0) {
 				return node;
 			}
