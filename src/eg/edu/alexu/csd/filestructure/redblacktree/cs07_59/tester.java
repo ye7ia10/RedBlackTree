@@ -1,5 +1,11 @@
 package eg.edu.alexu.csd.filestructure.redblacktree.cs07_59;
 
+import java.util.AbstractMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 public class tester {
 	public static void main(String[] args) {
 		RedBlackTree tree = new RedBlackTree<>();
@@ -54,6 +60,27 @@ public class tester {
 		//tree.delete(1);
 		System.out.println("**************************");
 		tree.inorderHelper(tree.getRoot());
+		
+		System.out.println("--------------------------------------------------");
+		TreeMap treeMap = new TreeMap<>();
+		treeMap.put(1, 2);
+		treeMap.put(3, 4);
+		treeMap.put(5, 3);
+		treeMap.put(7, 8);
+		treeMap.put(9, 10);
+		//System.out.println(treeMap.ceilingKey(8));
+		System.out.println(treeMap.entrySet());
+		
+		/*Set<Map.Entry<Integer, Integer>> map = new TreeSet<>(Map.Entry.comparingByKey());
+		map.add(new AbstractMap.SimpleEntry<Integer, Integer> (3,4));
+		map.add(new AbstractMap.SimpleEntry<Integer, Integer> (5,3));
+		map.add(new AbstractMap.SimpleEntry<Integer, Integer> (7,8));
+		map.add(new AbstractMap.SimpleEntry<Integer, Integer> (9,10));
+		map.add(new AbstractMap.SimpleEntry<Integer, Integer> (1,2));*/
+		//System.out.println(map);
+		
+		
+		
 	
 }
 }

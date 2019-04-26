@@ -116,7 +116,7 @@ public class RedBlackTree <T extends Comparable<T>, V> implements IRedBlackTree<
 	        return; 
 	  
 	    inorderHelper(root.getLeftChild()); 
-	    //System.out.println(root.getKey()); 
+	    System.out.println(root.getKey()); 
 	    inorderHelper(root.getRightChild()); 
 	} 
 
