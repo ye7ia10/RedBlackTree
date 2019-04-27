@@ -82,6 +82,7 @@ public class tester {
 		System.out.println(treeMap.size());
 		System.out.println(treeMap.firstKey());
 		System.out.println(treeMap.keySet());
+		System.out.println(treeMap.floorEntry(5));
 		/*Set<Map.Entry<Integer, Integer>> map = new TreeSet<>(Map.Entry.comparingByKey());
 		map.add(new AbstractMap.SimpleEntry<Integer, Integer> (3,4));
 		map.add(new AbstractMap.SimpleEntry<Integer, Integer> (5,3));

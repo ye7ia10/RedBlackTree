@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import javax.management.RuntimeErrorException;
 import eg.edu.alexu.csd.filestructure.redblacktree.INode;
@@ -14,19 +13,16 @@ import eg.edu.alexu.csd.filestructure.redblacktree.IRedBlackTree;
 import eg.edu.alexu.csd.filestructure.redblacktree.ITreeMap;
 
 public class TreeMap <T extends Comparable<T>, V> implements ITreeMap<T, V>{
-	IRedBlackTree<T,V> tree = new RedBlackTree<T,V>();
-	private int size = 0;
 	
-
+	IRedBlackTree<T,V> tree = new RedBlackTree<T,V>();
+	private int size = 0;	
 	
 	@Override
 	public Map.Entry<T,V> ceilingEntry(T key) {
 		// TODO Auto-generated method stub
-
 		if (key == null) {
 			throw new RuntimeErrorException(null);
 		}
-		
 		Iterator<Map.Entry<T, V>> it = entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<T, V> entry = it.next();
@@ -47,7 +43,7 @@ public class TreeMap <T extends Comparable<T>, V> implements ITreeMap<T, V>{
 		if (entry == null) {
 			return null;
 		}
-        return ceilingEntry(key).getKey();
+        return entry.getKey();
 	}
 
 	
@@ -56,6 +52,7 @@ public class TreeMap <T extends Comparable<T>, V> implements ITreeMap<T, V>{
 	public void clear() {
 		// TODO Auto-generated method stub
 		tree.clear();
+		size = 0;
 	}
 
 	@Override
@@ -65,14 +62,22 @@ public class TreeMap <T extends Comparable<T>, V> implements ITreeMap<T, V>{
 	}
 
 	@Override
-	public boolean containsValue(V value) {
-		// TODO Auto-generated method stub
-		
-		return false;
-	}
-
+    public boolean containsValue(V value) {
+        // TODO Auto-generated method stub
+		if (value == null) {
+			throw new RuntimeErrorException(null);
+		}
+        Iterator<Map.Entry<T, V>> it = entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<T, V> entry = it.next();
+            if ( entry.getValue().equals(value) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 	@Override
-	public Set<Entry<T, V>> entrySet() {
+	public Set<Map.Entry<T, V>> entrySet() {
 		// TODO Auto-generated method stub
 	   Set<Map.Entry<T, V>> result = new LinkedHashSet<Map.Entry<T, V>>();
 		
@@ -91,7 +96,7 @@ public class TreeMap <T extends Comparable<T>, V> implements ITreeMap<T, V>{
 	} 
 
 	@Override
-	public Entry<T, V> firstEntry() {
+	public Map.Entry<T, V> firstEntry() {
 		// TODO Auto-generated method stub
 		if (tree.isEmpty()) {
 			return null;
@@ -111,34 +116,96 @@ public class TreeMap <T extends Comparable<T>, V> implements ITreeMap<T, V>{
 	}
 
 	@Override
-	public Entry<T, V> floorEntry(T key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Map.Entry<T, V> floorEntry(T key) {
+        // TODO Auto-generated method stub
+		if (key == null) {
+	            throw new RuntimeErrorException(null);
+	    }
+		if (tree.isEmpty()) {
+			return null;
+		}
+		
+        Iterator<Map.Entry<T, V>> it = entrySet().iterator();
+        Map.Entry<T, V> entry = null;
+		while (it.hasNext()) {
+			Map.Entry<T, V> entry2 = it.next();
+			if (entry2.getKey().compareTo(key) > 0)
+				break;
+			entry = new AbstractMap.SimpleEntry<T, V>(entry2.getKey(), entry2.getValue());
+		}
+        return entry;
+    }
 
 	@Override
 	public T floorKey(T key) {
 		// TODO Auto-generated method stub
-		return null;
+		if (key == null) {
+			throw new RuntimeErrorException(null);
+		}   
+		Map.Entry<T, V> entry = floorEntry(key);
+		if (entry == null) {
+			return null;
+		}
+        return entry.getKey();
 	}
 
 	@Override
-	public V get(T key) {
+    public V get(T key) {
+        // TODO Auto-generated method stub
+        return tree.search(key);
+    }
+
+	@Override
+	public ArrayList<Map.Entry<T, V>> headMap(T toKey) {
 		// TODO Auto-generated method stub
-		return null;
+		if (toKey == null) {
+			throw new RuntimeErrorException(null);
+		}
+		
+		ArrayList<Map.Entry<T, V>> res = new ArrayList<>();
+		
+		Iterator<Map.Entry<T, V>> it = entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<T, V> entry = it.next();
+			if (entry.getKey().compareTo(toKey) < 0) {
+				res.add(entry);
+			} else {
+				break;
+			}
+		}
+		
+		if (res.size() == 0)
+			return null;
+		
+		return res;
 	}
 
 	@Override
-	public ArrayList<Entry<T, V>> headMap(T toKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public ArrayList<Map.Entry<T, V>> headMap(T toKey, boolean inclusive) {
+        // TODO Auto-generated method stub
+        if (toKey == null) {
+            throw new RuntimeErrorException(null);
+        }
+        
+        if (!inclusive) {
+        	return headMap(toKey);
+        }
+        ArrayList<Map.Entry<T, V>> res = new ArrayList<>();
 
-	@Override
-	public ArrayList<Entry<T, V>> headMap(T toKey, boolean inclusive) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        Iterator<Map.Entry<T, V>> it = entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<T, V> entry = it.next();
+            if (entry.getKey().compareTo(toKey) <= 0) {
+                res.add(entry);
+            }else
+                break;
+        }
+
+        if (res.size() == 0)
+            return null;
+
+        return res;
+    }
 
 	@Override
 	public Set<T> keySet() {
@@ -157,33 +224,53 @@ public class TreeMap <T extends Comparable<T>, V> implements ITreeMap<T, V>{
 	}
 
 	@Override
-	public Entry<T, V> lastEntry() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Map.Entry<T, V> lastEntry() {
+        // TODO Auto-generated method stub
+        Iterator<Map.Entry<T, V>> it = entrySet().iterator();
+        Map.Entry<T, V> last = null;
+        while (it.hasNext()) {
+            last = it.next();
+
+        }
+        return last;
+
+    }
 
 	@Override
 	public T lastKey() {
 		// TODO Auto-generated method stub
-		return null;
+		Map.Entry<T, V> entry = lastEntry();
+		if (entry == null) {
+			return null;
+		}
+        return entry.getKey();
 	}
 
 	@Override
-	public Entry<T, V> pollFirstEntry() {
+	public Map.Entry<T, V> pollFirstEntry() {
 		// TODO Auto-generated method stub
-		return null;
+		Map.Entry<T, V> entry = firstEntry();
+		if (entry == null) {
+			return null;
+		}
+		remove(entry.getKey());
+		return entry;
 	}
 
 	@Override
-	public Entry<T, V> pollLastEntry() {
+	public Map.Entry<T, V> pollLastEntry() {
 		// TODO Auto-generated method stub
-		return null;
+		Map.Entry<T, V> entry = lastEntry();
+		if (entry == null) {
+			return null;
+		}
+		remove(entry.getKey());
+		return entry;
 	}
 
 	@Override
 	public void put(T key, V value) {
 		// TODO Auto-generated method stub
-		
 		if (key == null || value == null) {
 			throw new RuntimeErrorException(null);
 		}
@@ -216,6 +303,15 @@ public class TreeMap <T extends Comparable<T>, V> implements ITreeMap<T, V>{
 	@Override
 	public boolean remove(T key) {
 		// TODO Auto-generated method stub
+		if (key == null) {
+			throw new RuntimeErrorException(null);
+		}
+		
+		if (tree.delete(key)) {
+			size--;
+			return true;
+		}
+		
 		return false;
 	}
 
@@ -226,9 +322,16 @@ public class TreeMap <T extends Comparable<T>, V> implements ITreeMap<T, V>{
 	}
 
 	@Override
-	public Collection<V> values() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Collection<V> values() {
+        // TODO Auto-generated method stub
+        Collection<V> collection = new ArrayList<V>();
+        Iterator<Map.Entry<T, V>> it = entrySet().iterator();
+        Map.Entry<T, V> last;
+        while (it.hasNext()) {
+            last = it.next();
+            collection.add(last.getValue());
+        }
+        return collection;
+    }
 
 }
