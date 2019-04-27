@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.filestructure.redblacktree.cs07_59;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -67,10 +68,20 @@ public class tester {
 		treeMap.put(3, 4);
 		treeMap.put(5, 3);
 		treeMap.put(7, 8);
-		treeMap.put(9, 10);
-		//System.out.println(treeMap.ceilingKey(8));
+		treeMap.put(5, 10);
+		System.out.println(treeMap.ceilingKey(8));
 		System.out.println(treeMap.entrySet());
+		System.out.println(treeMap.size());
 		
+		Map<Integer , Integer> map = new HashMap<>();
+		map.put(10, 10);
+		map.put(20, 20);
+		map.put(30, 30);
+		map.put(40, 40);
+		treeMap.putAll(map);
+		System.out.println(treeMap.size());
+		System.out.println(treeMap.firstKey());
+		System.out.println(treeMap.keySet());
 		/*Set<Map.Entry<Integer, Integer>> map = new TreeSet<>(Map.Entry.comparingByKey());
 		map.add(new AbstractMap.SimpleEntry<Integer, Integer> (3,4));
 		map.add(new AbstractMap.SimpleEntry<Integer, Integer> (5,3));
